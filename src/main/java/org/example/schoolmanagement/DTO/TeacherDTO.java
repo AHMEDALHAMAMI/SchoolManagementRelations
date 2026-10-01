@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,18 +13,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TeacherDTO {
 
-    @NotBlank(message = "Name is required")
+    @NotBlank(message = "Teacher name is required")
     private String name;
 
-    @NotNull(message = "Age is required")
-    @Min(value = 18, message = "Age must be at least 18")
+    @NotNull(message = "Teacher age is required")
+    @Min(value = 1, message = "Teacher age must be greater than 0")
     private Integer age;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email must be valid")
+    @NotBlank(message = "Teacher email is required")
+    @Email(message = "Teacher email must be valid")
     private String email;
 
-    @NotNull(message = "Salary is required")
-    @Positive(message = "Salary must be positive")
+    @NotNull(message = "Teacher salary is required")
+    @Min(value = 0, message = "Teacher salary must be greater than or equal to 0")
     private Double salary;
 }

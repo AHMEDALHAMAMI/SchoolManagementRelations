@@ -1,41 +1,40 @@
 package org.example.schoolmanagement.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Teacher {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Integer id;
 
     private String name;
 
     private Integer age;
 
-    private String email;
+    private String major;
 
-    private Double salary;
-
-    @OneToOne(mappedBy = "teacher", cascade = CascadeType.ALL)
-    private Address address;
-
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @ManyToMany
     @JsonIgnore
-    private List<Course> courses;
+    @ToString.Exclude
+    private Set<Course> courses = new HashSet<>();
 }

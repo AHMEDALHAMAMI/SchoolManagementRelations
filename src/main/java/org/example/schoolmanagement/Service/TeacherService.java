@@ -1,10 +1,10 @@
 package org.example.schoolmanagement.Service;
 
+import lombok.AllArgsConstructor;
 import org.example.schoolmanagement.Api.ApiException;
 import org.example.schoolmanagement.DTO.TeacherDTO;
 import org.example.schoolmanagement.Model.Teacher;
 import org.example.schoolmanagement.Repository.TeacherRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,12 +18,6 @@ public class TeacherService {
     public List<Teacher> getAllTeachers() {
 
         return teacherRepository.findAll();
-    }
-
-    public Teacher getTeacher(Integer id) {
-
-        return teacherRepository.findById(id)
-                .orElseThrow(() -> new ApiException("Teacher not found"));
     }
 
     public void addTeacher(TeacherDTO teacherDTO) {
@@ -44,12 +38,14 @@ public class TeacherService {
 
     public void updateTeacher(Integer id, TeacherDTO teacherDTO) {
 
-        Teacher teacher = teacherRepository.findById(id)
-                .orElseThrow(() -> new ApiException("Teacher not found"));
+        Teacher teacher = teacherRepository.findById(id).orElse(null);
+
+        if (teacher == null) {
+            throw new ApiException("Teacher not found");
+        }
 
         if (!teacher.getEmail().equals(teacherDTO.getEmail())
                 && teacherRepository.existsByEmail(teacherDTO.getEmail())) {
-
             throw new ApiException("Email already exists");
         }
 
@@ -63,16 +59,22 @@ public class TeacherService {
 
     public void deleteTeacher(Integer id) {
 
-        Teacher teacher = teacherRepository.findById(id)
-                .orElseThrow(() -> new ApiException("Teacher not found"));
+        Teacher teacher = teacherRepository.findById(id).orElse(null);
+
+        if (teacher == null) {
+            throw new ApiException("Teacher not found");
+        }
 
         teacherRepository.delete(teacher);
     }
 
     public Teacher getTeacherDetails(Integer id) {
 
-        Teacher teacher = teacherRepository.findById(id)
-                .orElseThrow(() -> new ApiException("Teacher not found"));
+        Teacher teacher = teacherRepository.findById(id).orElse(null);
+
+        if (teacher == null) {
+            throw new ApiException("Teacher not found");
+        }
 
         return teacher;
     }

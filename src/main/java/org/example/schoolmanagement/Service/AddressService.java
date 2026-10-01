@@ -1,12 +1,12 @@
 package org.example.schoolmanagement.Service;
 
+import lombok.AllArgsConstructor;
 import org.example.schoolmanagement.Api.ApiException;
 import org.example.schoolmanagement.DTO.AddressDTO;
 import org.example.schoolmanagement.Model.Address;
 import org.example.schoolmanagement.Model.Teacher;
 import org.example.schoolmanagement.Repository.AddressRepository;
 import org.example.schoolmanagement.Repository.TeacherRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,15 +16,20 @@ public class AddressService {
     private final AddressRepository addressRepository;
     private final TeacherRepository teacherRepository;
 
-    public void addTeacherAddress(Integer teacherId, AddressDTO addressDTO) {
-        Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new ApiException("Teacher not found"));
+    public void addTeacherAddress(Integer teacher_id, AddressDTO addressDTO) {
 
-        if (addressRepository.existsByTeacherId(teacherId)) {
+        Teacher teacher = teacherRepository.findById(teacher_id).orElse(null);
+
+        if (teacher == null) {
+            throw new ApiException("Teacher not found");
+        }
+
+        if (teacher.getAddress() != null) {
             throw new ApiException("Teacher already has an address");
         }
 
         Address address = new Address();
+
         address.setArea(addressDTO.getArea());
         address.setStreet(addressDTO.getStreet());
         address.setBuildingNumber(addressDTO.getBuildingNumber());
@@ -33,15 +38,20 @@ public class AddressService {
         addressRepository.save(address);
     }
 
-    public void updateTeacherAddress(Integer teacherId, AddressDTO addressDTO) {
-        Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new ApiException("Teacher not found"));
+    public void updateTeacherAddress(Integer teacher_id, AddressDTO addressDTO) {
 
-        if (teacher.getAddress() == null) {
-            throw new ApiException("Teacher does not have an address");
+        Teacher teacher = teacherRepository.findById(teacher_id).orElse(null);
+
+        if (teacher == null) {
+            throw new ApiException("Teacher not found");
         }
 
         Address address = teacher.getAddress();
+
+        if (address == null) {
+            throw new ApiException("Teacher address not found");
+        }
+
         address.setArea(addressDTO.getArea());
         address.setStreet(addressDTO.getStreet());
         address.setBuildingNumber(addressDTO.getBuildingNumber());
@@ -49,17 +59,20 @@ public class AddressService {
         addressRepository.save(address);
     }
 
-    public void deleteTeacherAddress(Integer teacherId) {
-        Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new ApiException("Teacher not found"));
+    public void deleteTeacherAddress(Integer teacher_id) {
 
-        if (teacher.getAddress() == null) {
-            throw new ApiException("Teacher does not have an address");
+        Teacher teacher = teacherRepository.findById(teacher_id).orElse(null);
+
+        if (teacher == null) {
+            throw new ApiException("Teacher not found");
         }
 
         Address address = teacher.getAddress();
-        teacher.setAddress(null);
-        teacherRepository.save(teacher);
+
+        if (address == null) {
+            throw new ApiException("Teacher address not found");
+        }
+
         addressRepository.delete(address);
     }
 }
